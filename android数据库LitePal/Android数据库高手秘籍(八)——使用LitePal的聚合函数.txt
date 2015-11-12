@@ -1,0 +1,69 @@
+转载请注明出处：http://blog.csdn.net/guolin_blog/article/details/40614197
+在上一篇文章当中，我们已经把LitePal查询操作的所有用法都学习完了，很显然，LitePal帮我们提供了非常强大的查询API，使得我们可以极度轻松地完成各种类型的查询。但是呢，在SQL语句当中，有一种查询是比较特殊的，就是聚合函数查询，它不像传统查询一样是将表中的某些列的数据查询出来，而是将查询结果进行聚合和统计，最终将统计后的结果进行返回。因此，任何一个关系型数据库中都会提供像count()、sum()等聚合函数。那么不出你所料，LitePal当中也是对这些聚合函数都进行了封装，让我们的操作可以变得更加简单。因此，今天我们就来学习一下LitePal中聚合函数的用法，还没有看过前面一篇文章的朋友建议先去参考 Android数据库高手秘籍(七)——体验LitePal的查询艺术 。
+LitePal的项目地址是：https://github.com/LitePalFramework/LitePal
+传统的聚合函数用法
+
+虽说是聚合函数，但它的用法其实和传统的查询还是差不多的，即仍然使用的是select语句。但是在select语句当中我们通常不会再去指定列名，而是将需要统计的列名传入到聚合函数当中，那么执行select语句使用的还是SQLiteDatabase中的rawQuery()方法。下面我们来尝试一下，比如说想要统计news表中一共有多少行，就可以这样写：
+[java] view plaincopy
+SQLiteDatabase db = dbHelper.getWritableDatabase();  
+Cursor c = db.rawQuery("select count(1) from news", null);  
+if (c != null && c.moveToFirst()) {  
+    int count = c.getInt(0);  
+    Log.d("TAG", "result is " + count);  
+}  
+c.close();  
+可以看到，在rawQuery()方法中我们指定了一个聚合查询语句，其中count(1)就是用于去统计一共有多少行的。当然这里并不一定要用count(1)，使用count(*)或者count(主键)都可以。然后rawQuery()方法返回的是一个Cursor对象，我们从这个Cursor当中取出第一行第一列的数据，这也就是统计出的结果了。
+那如果我们想要统计出news表中评论的总数量该怎么写呢？代码如下所示：
+[java] view plaincopy
+SQLiteDatabase db = dbHelper.getWritableDatabase();  
+Cursor c = db.rawQuery("select sum(commentcount) from news", null);  
+if (c != null && c.moveToFirst()) {  
+    int count = c.getInt(0);  
+    Log.d("TAG", "result is " + count);  
+}  
+c.close();  
+我们发现，代码基本是非常相似的，只不过查询语句当中count()函数替换成了sum()函数。当然了，sum()函数要求传入一个指定的列名，表示我们要汇总这一列的总合，因此这里我们传入了commentcount这一列。
+其它聚合函数的用法也是类似的，就不一一列举了。由此我们可以总结出一些结论，聚合函数都是要使用rawQuery()方法进行SQL查询，然后结果会封装到Cursor对象当中，接着我们再从Cursor中将结果取出。虽说你可能觉得上面的用法已经足够简单了，因为总共也就只写了六七行代码，但是你有没有想过更简单的写法，比如说只用一行代码就完成聚合查询操作。你没有看错，就是一行代码，LitePal让这些都成为了可能，那么下面我们就来学习一下LitePal中聚合函数的用法。
+使用LitePal的聚合函数
+
+LitePal中一共提供了count()、sum()、average()、max()和min()这五种聚合函数，基本上已经将SQL语句当中最常用的几种聚合函数都覆盖了，那么下面我们就来对这五种聚合函数的用法一一进行学习。
+count()
+
+count()方法主要是用于统计行数的，刚才演示了如何通过SQL语句来统计news表中一共有多少行，那么下面我们来看一下如何通过LitePal来实现同样的功能，代码如下所示：
+[java] view plaincopy
+int result = DataSupport.count(News.class);  
+你没有看错！就是这样一行代码就可以了。调用DataSupport类当中的count()方法，count()方法接收一个Class参数，用于指定去统计哪张表当中的数据，然后返回值是一个整型数据，也就是统计出的结果了。
+除此之外，LitePal中所有的聚合函数都是支持连缀的，也就是说我们可以在统计的时候加入条件语句。比如说想要统计一共有多少条新闻是零评论的，就可以这样写：
+[java] view plaincopy
+int result = DataSupport.where("commentcount = ?", "0").count(News.class);  
+这个用法和我们在上一篇文章当中学到的连缀查询是比较像的，在DataSupport类中首先指定一个where语句用于条件约束，然后连缀一个count()方法，这样统计出的就是满足条件语句的结果了。连缀不仅适用于count()方法，也同样适用于下面我们将要介绍的所有方法，但由于用法都是相同的，后面就不再重复介绍了。
+sum()
+
+看完了count()方法应该是觉得非常简单吧，剩下的几个聚合函数也是同样简单的，我们继续来学习一下。
+sum()方法主要是用于对结果进行求合的，比如说我们想要统计news表中评论的总数量，就可以这样写：
+[java] view plaincopy
+int result = DataSupport.sum(News.class, "commentcount", int.class);  
+sum()方法的参数要稍微多一点，我们来一一看下。第一个参数很简单，还是传入的Class，用于指定去统计哪张表当中的数据。第二个参数是列名，表示我们希望对哪一个列中的数据进行求合。第三个参数用于指定结果的类型，这里我们指定成int型，因此返回结果也是int型。
+需要注意的是，sum()方法只能对具有运算能力的列进行求合，比如说整型列或者浮点型列，如果你传入一个字符串类型的列去求合，肯定是得不到任何结果的，这时只会返回一个0作为结果。
+average()
+
+average()方法主要是用于统计平均数的，比如说我们想要统计news表中平均每条新闻有多少评论，就可以这样写：
+[java] view plaincopy
+double result = DataSupport.average(News.class, "commentcount");  
+其中average()方法接收两个参数，第一个参数不用说，仍然是Class。第二个参数用于指定列名的，表示我们想要统计哪一列的平均数。需要注意的是，这里返回值的类型是double型，因为平均数基本上都是会带有小数的，用double类型可以最大程序保留小数位的精度。
+同样地，average()方法也只能对具有运算能力的列进行求平均值，如果你传入了一个字符串类型的列，也是无法得到任何结果的，这时同样只会返回一个0作为结果。
+max()
+
+max()方法主要用于求出某个列中最大的数值，比如我们想要知道news表中所有新闻里面最高的评论数是多少，就可以这样写：
+[java] view plaincopy
+int result = DataSupport.max(News.class, "commentcount", int.class);  
+可以看到，max()方法接收三个参数，第一个参数同样还是Class，用于指定去统计哪张表当中的数据。第二个参数是列名，表示我们希望统计哪个列中的最大值。第三个参数用于指定结果的类型，根据实际情况来选择传入哪种类型就行了。
+那么不用多说，max()方法也只能对具有运算能力的列进行求最大值的，希望你在使用的时候能够谨记这一点。
+min()
+
+min()方法主要用于求出某个列中最小的数值，比如我们想要知道news表中所有新闻里面最少的评论数是多少，就可以这样写：
+[java] view plaincopy
+int result = DataSupport.min(News.class, "commentcount", int.class);  
+min()方法和max()方法的用法基本上是一模一样的，参数也是完全相同，只是方法名变了一下。它们一个是求出某一列中的最大值，一个是求出某一列中的最小值，仅此而已。
+现在我们已经将LitePal中所有聚合函数的用法全部都学习完了，怎么样，是不是感觉非常的简单？学完之后相信大家也意识到我在开篇的时候并不是在吹牛皮了，确确实实只需要一行代码就可以完成各种聚合查询操作了，上面任何一个统计操作我们都没有写到第二行代码。
+好了，经过八篇文章的学习，我们已经将LitePal中最主要的功能基本都学习完了，相信你从头看到这里，也是经历了一个对LitePal零认识，到目前可以熟练使用LitePal的一个过程。那么我们的这个Android数据库高手秘籍教程到这里也就要暂停了，这个系列短期不会再更新，而是等到LitePal发布了新版本，有了新功能之后才会对它继续进行讲解。后面我仍然会继续分享更多Android技术相关的其它文章，感谢大家对本专栏的持续关注。

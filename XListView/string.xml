@@ -1,0 +1,15 @@
+<!--xlistview-->
+    <string name="xlistview_header_hint_normal">下拉刷新</string>
+    <string name="xlistview_header_hint_ready">松开刷新数据</string>
+    <string name="xlistview_header_hint_loading">正在刷新&#8230;</string>
+    <string name="xlistview_header_last_time">"更新于:<xliff id="time">%s</xliff>"
+    </string>
+    <string name="xlistview_header_no_time">"更新于:从未刷新"</string>
+    <string name="xlistview_footer_pull_up_to_refresh">上拉加载更多</string>
+    <string name="xlistview_footer_hint_normal">查看更多</string>
+    <string name="xlistview_footer_hint_ready">松开载入更多</string>
+    <string name="xlistview_footer_hint_loading">正在加载更多</string>
+    <string name="xlistview_toast_succ">更新成功</string>
+    <string name="xlistview_toast_fail">更新失败</string>
+    <string name="xlistview_toast_10_sec">哎呦，暂时没新的啦</string>
+<!--xlistview-->

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="bottom" >
+
+    <RelativeLayout
+        android:id="@+id/xlistview_header_content"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="vertical" android:id="@+id/xlistview_header_text">
+
+            <TextView
+                android:id="@+id/xlistview_header_hint_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/xlistview_header_hint_normal"
+                android:textSize="@dimen/dimen_12"
+                android:textColor="@color/txt_refresh" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp" >
+
+                <TextView
+                    android:id="@+id/xlistview_header_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/dimen_12"
+                    android:textColor="@color/txt_refresh"
+                    android:visibility="gone"
+                    android:text="@string/xlistview_header_no_time"
+                      />
+            </LinearLayout>
+        </LinearLayout>
+		<RelativeLayout
+		     android:layout_width="wrap_content"
+	         android:layout_height="wrap_content"
+		     android:layout_toLeftOf="@id/xlistview_header_text"
+		     android:layout_centerVertical="true"
+		     android:layout_marginRight="20dip"
+		    >
+	        <ImageView
+	            android:id="@+id/xlistview_header_arrow"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerInParent="true"
+	            android:src="@drawable/xlistview_arrow" />
+	
+	        <ProgressBar
+	            android:id="@+id/xlistview_header_progressbar"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerInParent="true"
+	            android:indeterminateDrawable="@anim/xlistview_progress"
+	            android:visibility="invisible"
+	            style="@style/CustomProgressStyle_31dip" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

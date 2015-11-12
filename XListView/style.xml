@@ -1,0 +1,6 @@
+<style name="CustomProgressStyle_31dip" parent="@android:style/Widget.ProgressBar.Large">
+        <item name="android:minWidth">31dip</item>
+        <item name="android:maxWidth">31dip</item>
+        <item name="android:minHeight">31dip</item>
+        <item name="android:maxHeight">31dip</item>
+</style>

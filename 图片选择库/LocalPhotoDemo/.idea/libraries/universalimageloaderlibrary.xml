@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="universalimageloaderlibrary">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/universalimageloaderlibrary.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
